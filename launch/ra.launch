@@ -1,10 +1,10 @@
 <launch>
     <!-- parameters -->
-    <arg name="vertex_size" default = "8" /> 
+    <arg name="vertex_num" default = "6" /> 
     
     <!-- ra_node -->
     <node name="ra_node" pkg="ra" type="ra_node" output="screen">
-        <param name="vertex_size" type="double" value="$(arg vertex_size)" />
+        <param name="vertex_num" type="double" value="$(arg vertex_num)" />
     </node>
 
     <!-- rviz -->
