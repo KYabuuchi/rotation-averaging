@@ -3,6 +3,9 @@
 
 namespace util
 {
+// 回転行列間の距離
+double calcAngleResidual(const Eigen::Matrix3d& R1, const Eigen::Matrix3d& R2);
+
 // 次数Nの隣接グラフを生成する
 Eigen::MatrixXd initCyclicAdjacentGraph(int N);
 

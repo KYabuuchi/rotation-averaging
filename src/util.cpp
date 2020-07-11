@@ -10,6 +10,13 @@ namespace
 {
 std::mt19937 mt;
 }
+// 回転行列間の距離
+double calcAngleResidual(const Eigen::Matrix3d& R1, const Eigen::Matrix3d& R2)
+{
+  Eigen::Matrix3d dR = R1 - R2;
+  return 2 * std::asin(dR.norm() / (2 * 1.4142));
+}
+
 
 // 次数Nの隣接グラフを生成する
 Eigen::MatrixXd initCyclicAdjacentGraph(int N)
@@ -23,7 +30,6 @@ Eigen::MatrixXd initCyclicAdjacentGraph(int N)
   }
   return graph;
 }
-
 
 // 2次元球面(S2)上で一様乱択
 Eigen::Vector3d randomS2()

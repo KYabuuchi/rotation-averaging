@@ -1,8 +1,6 @@
 #include "init.hpp"
 #include "publish.hpp"
 #include "ra.hpp"
-
-
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
 #include <chrono>
@@ -15,7 +13,7 @@
 
 int main(int argc, char** argv)
 {
-  // Get rosparams
+  // rosparams
   ros::init(argc, argv, "ra_node");
   ros::NodeHandle pnh("~");
   int vertex_num = 3;
@@ -52,9 +50,8 @@ int main(int argc, char** argv)
     // Print the current state
     for (int i = 0; i < problem.V; i++) {
       Eigen::Matrix3d R = problem.truth(i);
-      Eigen::Matrix3d raw_R = Y.block(0, 3 * i, 3, 3);
-      Eigen::Matrix3d dA = R - util::normalize(raw_R);
-      double theta = std::asin(dA.norm() / (2 * 1.414));
+      Eigen::Matrix3d opt_R = Y.block(0, 3 * i, 3, 3);
+      double theta = util::calcAngleResidual(R, util::normalize(opt_R));
       std::cout << i << " cordal distance= " << theta << std::endl;
     }
     std::cout << "\033[1;32m###################\033[0m" << std::endl;
