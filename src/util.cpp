@@ -13,6 +13,7 @@ std::mt19937 mt;
 // 回転行列間の距離
 double calcAngleResidual(const Eigen::Matrix3d& R1, const Eigen::Matrix3d& R2)
 {
+  // using chordal distance
   Eigen::Matrix3d dR = R1 - R2;
   return 2 * std::asin(dR.norm() / (2 * 1.4142));
 }

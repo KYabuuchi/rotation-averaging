@@ -1,4 +1,4 @@
-#include "init.hpp"
+#include "problem.hpp"
 #include "publish.hpp"
 #include "ra.hpp"
 #include <Eigen/Dense>
@@ -7,7 +7,6 @@
 #include <iostream>
 #include <ros/ros.h>
 #include <std_msgs/Float32.h>
-#include <tf/transform_broadcaster.h>
 #include <visualization_msgs/MarkerArray.h>
 
 
@@ -27,6 +26,8 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
   ros::Publisher iteration_publisher = nh.advertise<std_msgs::Float32>("ra/iteration", 1);
   ros::Publisher pose_publisher = nh.advertise<visualization_msgs::MarkerArray>("ra/pose", 1);
+  ros::Publisher time_publisher = nh.advertise<std_msgs::Float32>("ra/time", 1);
+  pub::Visualizer visualizer(vertex_num);
 
 
   // Initialize random seed
@@ -49,9 +50,8 @@ int main(int argc, char** argv)
   while (ros::ok()) {
     // Print the current state
     for (int i = 0; i < problem.V; i++) {
-      Eigen::Matrix3d R = problem.truth(i);
       Eigen::Matrix3d opt_R = Y.block(0, 3 * i, 3, 3);
-      double theta = util::calcAngleResidual(R, util::normalize(opt_R));
+      double theta = util::calcAngleResidual(problem.truth(i), util::normalize(opt_R));
       std::cout << i << " cordal distance= " << theta << std::endl;
     }
     std::cout << "\033[1;32m###################\033[0m" << std::endl;
@@ -72,6 +72,8 @@ int main(int argc, char** argv)
     pub::publishPose();
     pub::publishIterator(iteration_publisher, iteration);
 
+    std::vector<std::pair<Eigen::Matrix3d, Eigen::Matrix3d>> a;
+    visualizer.publish(a);
 
     // Spin and wait
     ros::spinOnce();

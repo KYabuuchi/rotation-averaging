@@ -4,18 +4,6 @@
 
 namespace ra
 {
-Eigen::MatrixXd getRTilde(const Eigen::Matrix3d& R1, const Eigen::Matrix3d& R2, const Eigen::Matrix3d& R3)
-{
-  Eigen::MatrixXd R_tilde = Eigen::MatrixXd::Zero(9, 9);
-  R_tilde.block(0, 3, 3, 3) = R1.transpose() * R2;  // 1->2
-  R_tilde.block(0, 6, 3, 3) = R1.transpose() * R3;  // 1->3
-  R_tilde.block(3, 0, 3, 3) = R2.transpose() * R1;  // 2->1
-  R_tilde.block(3, 6, 3, 3) = R2.transpose() * R3;  // 2->3
-  R_tilde.block(6, 0, 3, 3) = R3.transpose() * R1;  // 3->1
-  R_tilde.block(6, 3, 3, 3) = R3.transpose() * R2;  // 3->2
-  return R_tilde;
-}
-
 // the result of eliminating the k th row and column from Y^t
 Eigen::MatrixXd calcB(const Eigen::MatrixXd& Y)
 {

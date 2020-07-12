@@ -1,4 +1,6 @@
+#define _USE_MATH_DEFINES
 #include "publish.hpp"
+#include <cmath>
 #include <std_msgs/Float32.h>
 #include <tf/transform_broadcaster.h>
 #include <visualization_msgs/MarkerArray.h>
@@ -29,8 +31,8 @@ void publishMeasurement(ros::Publisher& publisher)
 {
   visualization_msgs::MarkerArray marker_array;
   geometry_msgs::Vector3 diameter;
-  diameter.x = 4.0;
-  diameter.y = 4.0;
+  diameter.x = 2.0;
+  diameter.y = 1.0;
   diameter.z = 1.0;
 
   int id = 0;
@@ -52,7 +54,7 @@ void publishMeasurement(ros::Publisher& publisher)
 
   marker.id = static_cast<int>(id);
   marker.scale = diameter;
-  marker.type = visualization_msgs::Marker::SPHERE;
+  marker.type = visualization_msgs::Marker::CYLINDER;
   marker.color.r = 1.0f;
   marker.color.g = 1.0f;
   marker.color.b = 0.0f;
@@ -60,6 +62,33 @@ void publishMeasurement(ros::Publisher& publisher)
   marker_array.markers.push_back(marker);
 
   publisher.publish(marker_array);
+}
+
+Visualizer::Visualizer(int V) : V(V)
+{
+  for (int i = 0; i < V; i++) {
+    double tmp = 2 * M_PI / static_cast<double>(V);
+    Eigen::Vector3d t(std::cos(tmp * static_cast<double>(i)), std::sin(tmp * static_cast<double>(i)), 0);
+    tvecs.push_back(t);
+  }
+}
+
+void Visualizer::setPublisher(ros::Publisher& _publisher)
+{
+  publisher = _publisher;
+}
+
+void Visualizer::publish(const std::vector<std::pair<Eigen::Matrix3d, Eigen::Matrix3d>>& pairs)
+{
+  for (int i = 0; i < V; i++) {
+    Eigen::Matrix4d T;
+    T.setIdentity();
+    T.topRightCorner(3, 1) = tvecs.at(i);
+
+    tf::Transform transform;
+    transform.setFromOpenGLMatrix(T.cast<double>().eval().data());
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "pose" + std::to_string(i)));
+  }
 }
 
 
