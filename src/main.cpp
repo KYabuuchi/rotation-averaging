@@ -6,9 +6,9 @@
 #include <chrono>
 #include <iostream>
 #include <ros/ros.h>
+#include <rviz_visual_tools/rviz_visual_tools.h>
 #include <std_msgs/Float32.h>
 #include <visualization_msgs/MarkerArray.h>
-
 
 int main(int argc, char** argv)
 {
@@ -24,10 +24,20 @@ int main(int argc, char** argv)
 
   // Declear publisher
   ros::NodeHandle nh;
-  ros::Publisher iteration_publisher = nh.advertise<std_msgs::Float32>("ra/iteration", 1);
-  ros::Publisher pose_publisher = nh.advertise<visualization_msgs::MarkerArray>("ra/pose", 1);
-  ros::Publisher time_publisher = nh.advertise<std_msgs::Float32>("ra/time", 1);
+  ros::Publisher iteration_publisher = nh.advertise<std_msgs::Float32>("/iteration", 1);
+  ros::Publisher pose_publisher = nh.advertise<visualization_msgs::MarkerArray>("/pose", 1);
+  ros::Publisher time_publisher = nh.advertise<std_msgs::Float32>("/time", 1);
   pub::Visualizer visualizer(vertex_num);
+
+
+  rviz_visual_tools::RvizVisualToolsPtr visual_tools_;
+  visual_tools_.reset(new rviz_visual_tools::RvizVisualTools("world", "/visual_tools"));
+  visual_tools_->loadMarkerPub();  // create publisher before waiting
+  visual_tools_->deleteAllMarkers();
+  visual_tools_->enableBatchPublishing();
+  Eigen::Isometry3d pose;
+  pose = Eigen::AngleAxisd(M_PI / 4, Eigen::Vector3d::UnitY());  // rotate along X axis by 45 degrees
+  pose.translation() = Eigen::Vector3d(0.1, 0.1, 0.1);           // translate x,y,z
 
 
   // Initialize random seed
@@ -71,6 +81,14 @@ int main(int argc, char** argv)
     pub::publishMeasurement(pose_publisher);
     pub::publishPose();
     pub::publishIterator(iteration_publisher, iteration);
+
+    {
+      visual_tools_->deleteAllMarkers();
+      visual_tools_->publishCone(pose, 1.8 * M_PI, rviz_visual_tools::TRANSLUCENT, 0.20);
+      visual_tools_->publishText(pose, "cone:" + std::to_string(pose.translation().x()), rviz_visual_tools::WHITE, rviz_visual_tools::XXLARGE, false);
+      visual_tools_->trigger();
+      pose.translation().x() += 0.05;
+    }
 
     std::vector<std::pair<Eigen::Matrix3d, Eigen::Matrix3d>> a;
     visualizer.publish(a);
