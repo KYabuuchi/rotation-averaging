@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   roscpp
   visualization_msgs
-  rviz_visual_tools
   std_msgs
   tf
   rosbag

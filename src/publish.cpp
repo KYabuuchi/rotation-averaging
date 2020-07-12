@@ -32,8 +32,6 @@ void publishMeasurement(ros::Publisher& publisher)
 {
   visualization_msgs::MarkerArray marker_array;
   geometry_msgs::Vector3 diameter;
-  diameter.x = 2.0;
-  diameter.y = 1.0;
   diameter.z = 1.0;
 
   int id = 0;
@@ -41,11 +39,11 @@ void publishMeasurement(ros::Publisher& publisher)
   visualization_msgs::Marker marker;
   marker.header.frame_id = "world";
   marker.header.stamp = ros::Time::now();
-  marker.ns = "poses";
+  marker.ns = "text";
   marker.action = visualization_msgs::Marker::ADD;
 
-  marker.pose.position.x = 0;
-  marker.pose.position.y = 0;
+  marker.pose.position.x = 0.5;
+  marker.pose.position.y = 0.5;
   marker.pose.position.z = 0;
 
   marker.pose.orientation.x = 0;
@@ -55,11 +53,12 @@ void publishMeasurement(ros::Publisher& publisher)
 
   marker.id = static_cast<int>(id);
   marker.scale = diameter;
-  marker.type = visualization_msgs::Marker::CYLINDER;
+  marker.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
   marker.color.r = 1.0f;
   marker.color.g = 1.0f;
   marker.color.b = 0.0f;
-  marker.color.a = 0.3f;
+  marker.color.a = 1.0f;
+  marker.text = "Is this a pen?\nNo, it's Covid-19.";
   marker_array.markers.push_back(marker);
 
   publisher.publish(marker_array);

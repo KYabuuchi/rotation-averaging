@@ -3,7 +3,10 @@ Panels:
     Help Height: 0
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /Global Options1
+        - /Marker1
+        - /Marker1/Namespaces1
       Splitter Ratio: 0.3891128897666931
     Tree Height: 806
   - Class: rviz/Selection
@@ -55,7 +58,13 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        base:
+          Value: true
+        pose0:
+          Value: true
         pose1:
+          Value: true
+        pose2:
           Value: true
         world:
           Value: true
@@ -66,16 +75,30 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
+          base:
+            {}
+          pose0:
+            {}
           pose1:
+            {}
+          pose2:
             {}
       Update Interval: 0
       Value: true
     - Class: rviz/MarkerArray
-      Enabled: true
-      Marker Topic: /ra/pose
-      Name: MarkerArray
+      Enabled: false
+      Marker Topic: /pose
+      Name: text
       Namespaces:
-        poses: true
+        {}
+      Queue Size: 100
+      Value: false
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /cone
+      Name: Marker
+      Namespaces:
+        cone: true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -106,7 +129,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.511795520782471
+      Distance: 5.290855407714844
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -121,10 +144,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9203980565071106
-      Target Frame: iris/iris_pose
+      Pitch: 1.380397915840149
+      Target Frame: world
       Value: Orbit (rviz)
-      Yaw: 0.7503982186317444
+      Yaw: 5.068583965301514
     Saved: ~
 Window Geometry:
   Displays:

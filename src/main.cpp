@@ -6,9 +6,84 @@
 #include <chrono>
 #include <iostream>
 #include <ros/ros.h>
-#include <rviz_visual_tools/rviz_visual_tools.h>
 #include <std_msgs/Float32.h>
 #include <visualization_msgs/MarkerArray.h>
+
+void publishCone(ros::Publisher& publisher)
+{
+  Eigen::Matrix4d T;
+  T.Identity();
+  double angle = 3.141592 / 4;
+  double length = 1;
+
+  visualization_msgs::Marker marker;
+  marker.header.frame_id = "world";
+  marker.header.stamp = ros::Time();
+  marker.ns = "hoge";
+  marker.id = 0;
+  marker.type = visualization_msgs::Marker::TRIANGLE_LIST;
+  marker.action = visualization_msgs::Marker::ADD;
+  marker.pose.position.x = 0.0;
+  marker.pose.position.y = 0.0;
+  marker.pose.position.z = 0.0;
+  marker.pose.orientation.x = 0.0;
+  marker.pose.orientation.y = 0.0;
+  marker.pose.orientation.z = 0.0;
+  marker.pose.orientation.w = 1.0;
+  marker.pose.position.x = 0;
+  marker.pose.position.y = 0;
+  marker.pose.position.z = 0;
+  marker.scale.x = 1.0;
+  marker.scale.y = 1.0;
+  marker.scale.z = 1.0;
+  marker.color.r = 1.0;
+  marker.color.g = 1.0;
+  marker.color.b = 1.0;
+  marker.color.a = 1.0;
+
+  {
+    geometry_msgs::Point p;
+    p.x = 0;
+    p.y = 0;
+    p.z = 0;
+    marker.points.push_back(p);
+    p.y = 0.2;
+    marker.points.push_back(p);
+    p.z = 0.2;
+    marker.points.push_back(p);
+
+    std_msgs::ColorRGBA c;
+    c.r = 0.1;
+    c.g = 1.0;
+    c.b = 0.1;
+    c.a = 0.9;
+    marker.colors.push_back(c);
+    marker.colors.push_back(c);
+    marker.colors.push_back(c);
+  }
+  {
+    geometry_msgs::Point p;
+    p.x = 0.5;
+    p.y = 0;
+    p.z = 0;
+    marker.points.push_back(p);
+    p.y = 0.2;
+    marker.points.push_back(p);
+    p.z = 0.2;
+    marker.points.push_back(p);
+
+    std_msgs::ColorRGBA c;
+    c.r = 1.0;
+    c.g = 0.1;
+    c.b = 0.1;
+    c.a = 0.9;
+    marker.colors.push_back(c);
+    marker.colors.push_back(c);
+    marker.colors.push_back(c);
+  }
+
+  publisher.publish(marker);
+}
 
 int main(int argc, char** argv)
 {
@@ -26,18 +101,9 @@ int main(int argc, char** argv)
   ros::NodeHandle nh;
   ros::Publisher iteration_publisher = nh.advertise<std_msgs::Float32>("/iteration", 1);
   ros::Publisher pose_publisher = nh.advertise<visualization_msgs::MarkerArray>("/pose", 1);
+  ros::Publisher cone_publisher = nh.advertise<visualization_msgs::Marker>("/cone", 1);
   ros::Publisher time_publisher = nh.advertise<std_msgs::Float32>("/time", 1);
   pub::Visualizer visualizer(vertex_num);
-
-
-  rviz_visual_tools::RvizVisualToolsPtr visual_tools_;
-  visual_tools_.reset(new rviz_visual_tools::RvizVisualTools("world", "/visual_tools"));
-  visual_tools_->loadMarkerPub();  // create publisher before waiting
-  visual_tools_->deleteAllMarkers();
-  visual_tools_->enableBatchPublishing();
-  Eigen::Isometry3d pose;
-  pose = Eigen::AngleAxisd(M_PI / 4, Eigen::Vector3d::UnitY());  // rotate along X axis by 45 degrees
-  pose.translation() = Eigen::Vector3d(0.1, 0.1, 0.1);           // translate x,y,z
 
 
   // Initialize random seed
@@ -58,13 +124,14 @@ int main(int argc, char** argv)
 
 
   while (ros::ok()) {
+    iteration++;
     // Print the current state
     for (int i = 0; i < problem.V; i++) {
       Eigen::Matrix3d opt_R = Y.block(0, 3 * i, 3, 3);
       double theta = util::calcAngleResidual(problem.truth(i), util::normalize(opt_R));
       std::cout << i << " cordal distance= " << theta << std::endl;
     }
-    std::cout << "\033[1;32m###################\033[0m" << std::endl;
+    std::cout << "\033[1;32m###################" << iteration << "\033[0m" << std::endl;
 
 
     // Optimize
@@ -81,14 +148,7 @@ int main(int argc, char** argv)
     pub::publishMeasurement(pose_publisher);
     pub::publishPose();
     pub::publishIterator(iteration_publisher, iteration);
-
-    {
-      visual_tools_->deleteAllMarkers();
-      visual_tools_->publishCone(pose, 1.8 * M_PI, rviz_visual_tools::TRANSLUCENT, 0.20);
-      visual_tools_->publishText(pose, "cone:" + std::to_string(pose.translation().x()), rviz_visual_tools::WHITE, rviz_visual_tools::XXLARGE, false);
-      visual_tools_->trigger();
-      pose.translation().x() += 0.05;
-    }
+    publishCone(cone_publisher);
 
     std::vector<std::pair<Eigen::Matrix3d, Eigen::Matrix3d>> a;
     visualizer.publish(a);
