@@ -7,22 +7,13 @@
 
 namespace pub
 {
-void publishMeasurement(ros::Publisher& publisher);
-
-void publishIterator(ros::Publisher& publisher, int iteration);
-
-void publishError(ros::Publisher& publisher, double error);
-
-void publishTime(ros::Publisher& publisher, int time_ms);
-
+void publishText(ros::Publisher& publisher, const std::string& text);
 
 class Visualizer
 {
 public:
   Visualizer(int V, ros::Publisher& publisher);
-
   void publish(const Matrix3dVector& estimated, const RelativeRotations& measurements);
-
 
 private:
   ros::Publisher visualizatin_marker_array_publisher;
@@ -55,4 +46,5 @@ private:
   tf::TransformBroadcaster br;
   std_msgs::ColorRGBA color[3];
 };
+
 }  // namespace pub

@@ -28,9 +28,7 @@ int main(int argc, char** argv)
 
   // Declear publisher
   ros::NodeHandle nh;
-  ros::Publisher iteration_publisher = nh.advertise<std_msgs::Float32>("/iteration", 1);
-  ros::Publisher time_publisher = nh.advertise<std_msgs::Float32>("/time", 1);
-  ros::Publisher error_publisher = nh.advertise<std_msgs::Float32>("/error", 1);
+  ros::Publisher text_publisher = nh.advertise<visualization_msgs::Marker>("/text", 1);
   ros::Publisher measurement_publisher = nh.advertise<visualization_msgs::MarkerArray>("/measurements", 1);
   pub::Visualizer visualizer(vertex_num, measurement_publisher);
 
@@ -38,8 +36,8 @@ int main(int argc, char** argv)
   // Construct the problem
   ProblemGenerator problem(vertex_num, noise_gain);
   RotationAveraging ra(vertex_num);
-  for (size_t i = 0; i < vertex_num - 1; i++) {
-    for (size_t j = i + 1; j < vertex_num; j++) {
+  for (size_t i = 0; i < vertex_num; i++) {
+    for (size_t j = 0; j < vertex_num; j++) {
       if (!problem.isAdjacent(i, j)) continue;
       ra.setMeasurement(i, j, problem.measured(i, j));
     }
@@ -60,9 +58,8 @@ int main(int argc, char** argv)
 
 
     // Publish information for RViz
-    pub::publishIterator(iteration_publisher, iteration);
-    pub::publishTime(time_publisher, past_time);
-    pub::publishError(error_publisher, error);
+    std::string text = "time: " + std::to_string(past_time) + "[ms]\nerror: " + std::to_string(error) + "\niteration: " + std::to_string(iteration / 2);
+    pub::publishText(text_publisher, text);
 
 
     // Publish pose for RViz

@@ -15,7 +15,10 @@ public:
   ProblemGenerator(const int V, const double noise_gain = 0.2) : V(V), noise_gain(noise_gain)
   {
     // Construct the adjacent graph
-    adjacent_graph = util::initCyclicAdjacentGraph(V);
+    adjacent_graph.setZero(V, V);
+    adjacent_graph(V - 1, 0) = 1;
+    for (int i = 0; i < V - 1; i++)
+      adjacent_graph(i, i + 1) = 1;
     std::cout << "adjacent graph=\n\033[1;31m"
               << adjacent_graph << "\033[0m" << std::endl;
 
@@ -28,8 +31,8 @@ public:
 
 
     // Initialize random noise rotation matrix
-    for (size_t i = 0; i < V - 1; i++) {
-      for (size_t j = i + 1; j < V; j++) {
+    for (size_t i = 0; i < V; i++) {
+      for (size_t j = 0; j < V; j++) {
         if (!isAdjacent(i, j)) continue;
 
         Eigen::Matrix3d N = util::noiseRotation(noise_gain);
@@ -39,8 +42,8 @@ public:
     }
 
     // Initialize measured rotation matrix
-    for (size_t i = 0; i < V - 1; i++) {
-      for (size_t j = i + 1; j < V; j++) {
+    for (size_t i = 0; i < V; i++) {
+      for (size_t j = 0; j < V; j++) {
         if (!isAdjacent(i, j)) continue;
 
         const Eigen::Matrix3d& Ri = true_rotations.at(i);
@@ -66,11 +69,7 @@ public:
   {
     Eigen::Matrix3d R = Eigen::Matrix3d::Zero();
     if (!isAdjacent(from, to)) return R;
-
-    if (from < to)
-      return measured_rotations.at(std::make_pair(from, to));
-    else
-      return measured_rotations.at(std::make_pair(to, from)).transpose();
+    return measured_rotations.at(std::make_pair(from, to));
   }
 
   const RelativeRotations& getMeasurement() const

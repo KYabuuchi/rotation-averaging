@@ -53,5 +53,5 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(ra_node src/main.cpp src/publish.cpp src/util.cpp src/rotation_averaging.cpp src/cone_publisher.cpp)
+add_executable(ra_node src/main.cpp src/publish.cpp src/util.cpp src/rotation_averaging.cpp)
 target_link_libraries(ra_node ${catkin_LIBRARIES} ${OpenCV_LIBS})

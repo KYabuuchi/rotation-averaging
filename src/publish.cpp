@@ -8,33 +8,10 @@
 
 namespace pub
 {
-void publishError(ros::Publisher& publisher, double error)
+void publishText(ros::Publisher& publisher, const std::string& text)
 {
-  std_msgs::Float32 error_msg;
-  error_msg.data = static_cast<float>(error);
-  publisher.publish(error_msg);
-}
-
-
-void publishIterator(ros::Publisher& publisher, int iteration)
-{
-  std_msgs::Float32 iteration_msg;
-  iteration_msg.data = static_cast<float>(iteration);
-  publisher.publish(iteration_msg);
-}
-
-void publishTime(ros::Publisher& publisher, int time_ms)
-{
-  std_msgs::Float32 time_msg;
-  time_msg.data = static_cast<float>(time_ms);
-  publisher.publish(time_msg);
-}
-
-void publishMeasurement(ros::Publisher& publisher)
-{
-  visualization_msgs::MarkerArray marker_array;
   geometry_msgs::Vector3 diameter;
-  diameter.z = 1.0;
+  diameter.z = 0.2;
 
   int id = 0;
 
@@ -44,8 +21,8 @@ void publishMeasurement(ros::Publisher& publisher)
   marker.ns = "text";
   marker.action = visualization_msgs::Marker::ADD;
 
-  marker.pose.position.x = 0.5;
-  marker.pose.position.y = 0.5;
+  marker.pose.position.x = 2;
+  marker.pose.position.y = 0;
   marker.pose.position.z = 0;
 
   marker.pose.orientation.x = 0;
@@ -60,10 +37,9 @@ void publishMeasurement(ros::Publisher& publisher)
   marker.color.g = 1.0f;
   marker.color.b = 0.0f;
   marker.color.a = 1.0f;
-  marker.text = "Is this a pen?\nNo, it's Covid-19.";
-  marker_array.markers.push_back(marker);
+  marker.text = text;
 
-  publisher.publish(marker_array);
+  publisher.publish(marker);
 }
 
 Visualizer::Visualizer(int V, ros::Publisher& publisher) : V(V), visualizatin_marker_array_publisher(publisher)
@@ -97,8 +73,8 @@ void Visualizer::publish(const Matrix3dVector& estimated, const RelativeRotation
 
   int id = 0;
   visualization_msgs::MarkerArray marker_array;
-  for (size_t i = 0; i < V - 1; i++) {
-    for (size_t j = i + 1; j < V; j++) {
+  for (size_t i = 0; i < V; i++) {
+    for (size_t j = 0; j < V; j++) {
       if (measurements.count(std::make_pair(i, j)) == 0) continue;
       Eigen::Matrix3d R = measurements.at(std::make_pair(i, j));
       marker_array.markers.push_back(makeMarker(id++, estimated.at(i) * R, tvecs.at(j)));
@@ -129,9 +105,9 @@ visualization_msgs::Marker Visualizer::makeMarker(int id, const Eigen::Matrix3d&
   marker.color.a = 1.0;
 
 
-  const double Length = 0.3;  // length
-  const double Radius = 0.1;  // radius
-  const int N = 8;            // resolution
+  const double Length = 0.3;   // length
+  const double Radius = 0.05;  // radius
+  const int N = 8;             // resolution
 
   for (int axis = 0; axis < 3; axis++) {
 

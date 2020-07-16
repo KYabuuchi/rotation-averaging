@@ -18,20 +18,6 @@ double calcAngleResidual(const Eigen::Matrix3d& R1, const Eigen::Matrix3d& R2)
   return 2 * std::asin(dR.norm() / (2 * 1.4142));
 }
 
-
-// 次数Nの隣接グラフを生成する
-Eigen::MatrixXd initCyclicAdjacentGraph(int N)
-{
-  Eigen::MatrixXd graph = Eigen::MatrixXd::Zero(N, N);
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < N; j++) {
-      if (std::abs(i - j) == 1) graph(i, j) = 1;
-      if (std::abs(i - j) == N - 1) graph(i, j) = 1;
-    }
-  }
-  return graph;
-}
-
 // 2次元球面(S2)上で一様乱択
 Eigen::Vector3d randomS2()
 {
