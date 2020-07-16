@@ -4,8 +4,6 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
-        - /Marker1
         - /Marker1/Namespaces1
       Splitter Ratio: 0.3891128897666931
     Tree Height: 806
@@ -58,8 +56,6 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        base:
-          Value: true
         pose0:
           Value: true
         pose1:
@@ -75,8 +71,6 @@ Visualization Manager:
       Show Names: true
       Tree:
         world:
-          base:
-            {}
           pose0:
             {}
           pose1:
@@ -101,6 +95,81 @@ Visualization Manager:
         cone: true
       Queue Size: 100
       Value: true
+    - Buffer length: 100
+      Class: jsk_rviz_plugin/Plotter2D
+      Enabled: true
+      Name: Iteration
+      Show Value: true
+      Topic: /iteration
+      Value: true
+      auto color change: false
+      auto scale: true
+      background color: 0; 0; 0
+      backround alpha: 0
+      border: true
+      foreground alpha: 0.699999988079071
+      foreground color: 25; 255; 240
+      height: 128
+      left: 128
+      linewidth: 1
+      max color: 255; 0; 0
+      max value: 1
+      min value: -1
+      show caption: true
+      text size: 12
+      top: 128
+      update interval: 0.03999999910593033
+      width: 128
+    - Buffer length: 100
+      Class: jsk_rviz_plugin/Plotter2D
+      Enabled: true
+      Name: Time[ms]
+      Show Value: true
+      Topic: /time
+      Value: true
+      auto color change: false
+      auto scale: true
+      background color: 0; 0; 0
+      backround alpha: 0
+      border: true
+      foreground alpha: 0.699999988079071
+      foreground color: 25; 255; 240
+      height: 128
+      left: 256
+      linewidth: 1
+      max color: 255; 0; 0
+      max value: 1
+      min value: -1
+      show caption: true
+      text size: 12
+      top: 128
+      update interval: 0.03999999910593033
+      width: 128
+    - Buffer length: 100
+      Class: jsk_rviz_plugin/Plotter2D
+      Enabled: true
+      Name: Error
+      Show Value: true
+      Topic: /time
+      Value: true
+      auto color change: false
+      auto scale: true
+      background color: 0; 0; 0
+      backround alpha: 0
+      border: true
+      foreground alpha: 0.699999988079071
+      foreground color: 25; 255; 240
+      height: 128
+      left: 384
+      linewidth: 1
+      max color: 255; 0; 0
+      max value: 1
+      min value: -1
+      show caption: true
+      text size: 12
+      top: 128
+      update interval: 0.03999999910593033
+      width: 128
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -129,25 +198,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.290855407714844
+      Distance: 3.3293471336364746
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.024737857282161713
+        Y: 0.022686585783958435
+        Z: -0.010219970718026161
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.380397915840149
+      Pitch: 1.0997968912124634
       Target Frame: world
       Value: Orbit (rviz)
-      Yaw: 5.068583965301514
+      Yaw: 1.2335834503173828
     Saved: ~
 Window Geometry:
   Displays:

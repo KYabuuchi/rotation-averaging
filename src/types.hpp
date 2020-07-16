@@ -1,4 +1,5 @@
 // https://qiita.com/ganariya/items/df35d253726269bda436
+#pragma once
 #include <Eigen/Dense>
 #include <unordered_map>
 #include <vector>

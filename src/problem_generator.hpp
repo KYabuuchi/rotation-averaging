@@ -73,6 +73,11 @@ public:
       return measured_rotations.at(std::make_pair(to, from)).transpose();
   }
 
+  const RelativeRotations& getMeasurement() const
+  {
+    return measured_rotations;
+  }
+
 private:
   Eigen::MatrixXd adjacent_graph;
   RelativeRotations noise_rotations;

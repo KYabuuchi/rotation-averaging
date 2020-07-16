@@ -8,6 +8,14 @@
 
 namespace pub
 {
+void publishError(ros::Publisher& publisher, double error)
+{
+  std_msgs::Float32 error_msg;
+  error_msg.data = static_cast<float>(error);
+  publisher.publish(error_msg);
+}
+
+
 void publishIterator(ros::Publisher& publisher, int iteration)
 {
   std_msgs::Float32 iteration_msg;
@@ -15,17 +23,11 @@ void publishIterator(ros::Publisher& publisher, int iteration)
   publisher.publish(iteration_msg);
 }
 
-void publishPose()
+void publishTime(ros::Publisher& publisher, int time_ms)
 {
-  static tf::TransformBroadcaster br;
-
-  tf::Transform transform;
-  transform.setOrigin(tf::Vector3(1, 0, 0));
-  tf::Quaternion q;
-  q.setRPY(0, 0, 0);
-  transform.setRotation(q);
-
-  br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "pose1"));
+  std_msgs::Float32 time_msg;
+  time_msg.data = static_cast<float>(time_ms);
+  publisher.publish(time_msg);
 }
 
 void publishMeasurement(ros::Publisher& publisher)
@@ -64,7 +66,7 @@ void publishMeasurement(ros::Publisher& publisher)
   publisher.publish(marker_array);
 }
 
-Visualizer::Visualizer(int V) : V(V)
+Visualizer::Visualizer(int V, ros::Publisher& publisher) : V(V), visualizatin_marker_array_publisher(publisher)
 {
   for (int i = 0; i < V; i++) {
     double tmp = 2 * M_PI / static_cast<double>(V);
@@ -73,21 +75,26 @@ Visualizer::Visualizer(int V) : V(V)
   }
 }
 
-void Visualizer::setPublisher(ros::Publisher& _publisher)
-{
-  publisher = _publisher;
-}
-
-void Visualizer::publish(const std::vector<std::pair<Eigen::Matrix3d, Eigen::Matrix3d>>& pairs)
+void Visualizer::publish(const Matrix3dVector& estimated, const RelativeRotations& measurements)
 {
   for (int i = 0; i < V; i++) {
     Eigen::Matrix4d T;
     T.setIdentity();
     T.topRightCorner(3, 1) = tvecs.at(i);
+    T.topLeftCorner(3, 3) = estimated.at(i);
 
     tf::Transform transform;
     transform.setFromOpenGLMatrix(T.cast<double>().eval().data());
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "pose" + std::to_string(i)));
+  }
+
+
+  for (size_t i = 0; i < V - 1; i++) {
+    for (size_t j = i + 1; j < V; j++) {
+      if (!measurements.count(std::make_pair(i, j)) == 0) continue;
+      Eigen::Matrix3d R = measurements.at(std::make_pair(i, j));
+      // TODO: draw cones
+    }
   }
 }
 
