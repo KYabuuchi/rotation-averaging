@@ -11,7 +11,7 @@
 
 int main(int argc, char** argv)
 {
-  // Initialize random seed
+  // Set random seed
   unsigned int seed = 0;
   srand(seed);
 
@@ -19,7 +19,7 @@ int main(int argc, char** argv)
   // rosparams
   ros::init(argc, argv, "ra_node");
   ros::NodeHandle pnh("~");
-  int vertex_num = 10;
+  int vertex_num = 30;
   double noise_gain = 0.1;
   pnh.getParam("vertex_num", vertex_num);
   pnh.getParam("noise_gain", noise_gain);
@@ -53,12 +53,11 @@ int main(int argc, char** argv)
   while (ros::ok()) {
     // Print the current state
     double error = ra.getTotalError();
-    std::cout << "\033[1;32m###################" << iteration << "\033[0m" << std::endl;
-    std::cout << "error: " << error << ", time: " << past_time << std::endl;
+    std::cout << "\033[1;32m################### " << iteration << "\033[0m" << std::endl;
 
 
     // Publish information for RViz
-    std::string text = "time: " + std::to_string(past_time) + "[ms]\nerror: " + std::to_string(error) + "\niteration: " + std::to_string(iteration / 2);
+    std::string text = "time: " + std::to_string(past_time / 1000.0) + "[ms]\nerror: " + std::to_string(error) + "\niteration: " + std::to_string(iteration);
     pub::publishText(text_publisher, text);
 
 
@@ -79,12 +78,11 @@ int main(int argc, char** argv)
 
 
     // Optimize
-    if (iteration % 2 == 0) {
-      auto start = std::chrono::system_clock::now();
-      ra.optimize();
-      auto end = std::chrono::system_clock::now();
-      past_time += std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    }
+    auto start = std::chrono::system_clock::now();
+    // ra.optimize();
+    ra.optimizeOnce();
+    auto end = std::chrono::system_clock::now();
+    past_time += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
   }
 
   return 0;

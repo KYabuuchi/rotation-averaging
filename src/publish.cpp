@@ -21,7 +21,7 @@ void publishText(ros::Publisher& publisher, const std::string& text)
   marker.ns = "text";
   marker.action = visualization_msgs::Marker::ADD;
 
-  marker.pose.position.x = 2;
+  marker.pose.position.x = 1.5;
   marker.pose.position.y = 0;
   marker.pose.position.z = 0;
 

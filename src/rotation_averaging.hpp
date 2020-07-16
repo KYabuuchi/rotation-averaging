@@ -10,6 +10,7 @@ public:
   RotationAveraging(size_t V);
 
   void optimize();
+  void optimizeOnce();
 
   void setMeasurement(size_t from, size_t to, const Eigen::Matrix3d& R);
   bool getMeasurement(size_t from, size_t to, Eigen::Matrix3d& R) const;
