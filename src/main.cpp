@@ -1,4 +1,3 @@
-#include "cone_publisher.hpp"
 #include "problem_generator.hpp"
 #include "publish.hpp"
 #include "rotation_averaging.hpp"
@@ -9,7 +8,6 @@
 #include <ros/ros.h>
 #include <std_msgs/Float32.h>
 #include <visualization_msgs/MarkerArray.h>
-
 
 int main(int argc, char** argv)
 {
@@ -56,12 +54,12 @@ int main(int argc, char** argv)
 
   while (ros::ok()) {
     // Print the current state
-    std::cout << "\033[1;32m###################" << iteration << "\033[0m" << std::endl;
     double error = ra.getTotalError();
+    std::cout << "\033[1;32m###################" << iteration << "\033[0m" << std::endl;
     std::cout << "error: " << error << ", time: " << past_time << std::endl;
 
 
-    // Publish texts for RViz
+    // Publish information for RViz
     pub::publishIterator(iteration_publisher, iteration);
     pub::publishTime(time_publisher, past_time);
     pub::publishError(error_publisher, error);
@@ -84,12 +82,12 @@ int main(int argc, char** argv)
 
 
     // Optimize
-    auto start = std::chrono::system_clock::now();
-    if (iteration % 2 == 0)
+    if (iteration % 2 == 0) {
+      auto start = std::chrono::system_clock::now();
       ra.optimize();
-
-    auto end = std::chrono::system_clock::now();
-    past_time += std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+      auto end = std::chrono::system_clock::now();
+      past_time += std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    }
   }
 
   return 0;

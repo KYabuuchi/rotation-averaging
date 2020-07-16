@@ -4,7 +4,8 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Marker1/Namespaces1
+        - /TF1/Frames1
+        - /TF1/Frames1/pose11
       Splitter Ratio: 0.3891128897666931
     Tree Height: 806
   - Class: rviz/Selection
@@ -62,6 +63,20 @@ Visualization Manager:
           Value: true
         pose2:
           Value: true
+        pose3:
+          Value: true
+        pose4:
+          Value: true
+        pose5:
+          Value: true
+        pose6:
+          Value: true
+        pose7:
+          Value: true
+        pose8:
+          Value: true
+        pose9:
+          Value: true
         world:
           Value: true
       Marker Scale: 1
@@ -77,23 +92,21 @@ Visualization Manager:
             {}
           pose2:
             {}
+          pose3:
+            {}
+          pose4:
+            {}
+          pose5:
+            {}
+          pose6:
+            {}
+          pose7:
+            {}
+          pose8:
+            {}
+          pose9:
+            {}
       Update Interval: 0
-      Value: true
-    - Class: rviz/MarkerArray
-      Enabled: false
-      Marker Topic: /pose
-      Name: text
-      Namespaces:
-        {}
-      Queue Size: 100
-      Value: false
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /cone
-      Name: Marker
-      Namespaces:
-        cone: true
-      Queue Size: 100
       Value: true
     - Buffer length: 100
       Class: jsk_rviz_plugin/Plotter2D
@@ -110,14 +123,14 @@ Visualization Manager:
       foreground alpha: 0.699999988079071
       foreground color: 25; 255; 240
       height: 128
-      left: 128
+      left: 0
       linewidth: 1
       max color: 255; 0; 0
       max value: 1
       min value: -1
       show caption: true
       text size: 12
-      top: 128
+      top: 0
       update interval: 0.03999999910593033
       width: 128
     - Buffer length: 100
@@ -135,14 +148,14 @@ Visualization Manager:
       foreground alpha: 0.699999988079071
       foreground color: 25; 255; 240
       height: 128
-      left: 256
+      left: 128
       linewidth: 1
       max color: 255; 0; 0
       max value: 1
       min value: -1
       show caption: true
       text size: 12
-      top: 128
+      top: 0
       update interval: 0.03999999910593033
       width: 128
     - Buffer length: 100
@@ -150,7 +163,7 @@ Visualization Manager:
       Enabled: true
       Name: Error
       Show Value: true
-      Topic: /time
+      Topic: /error
       Value: true
       auto color change: false
       auto scale: true
@@ -158,18 +171,34 @@ Visualization Manager:
       backround alpha: 0
       border: true
       foreground alpha: 0.699999988079071
-      foreground color: 25; 255; 240
+      foreground color: 255; 25; 0
       height: 128
-      left: 384
+      left: 256
       linewidth: 1
       max color: 255; 0; 0
       max value: 1
       min value: -1
       show caption: true
       text size: 12
-      top: 128
+      top: 0
       update interval: 0.03999999910593033
       width: 128
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /measurements
+      Name: Measurements
+      Namespaces:
+        cone: true
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: false
+      Marker Topic: /pose
+      Name: text
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -198,25 +227,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.3293471336364746
+      Distance: 3.7335166931152344
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.024737857282161713
-        Y: 0.022686585783958435
-        Z: -0.010219970718026161
+        X: -0.046620991080999374
+        Y: 0.19340109825134277
+        Z: 0.03486304730176926
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0997968912124634
+      Pitch: 1.5697963237762451
       Target Frame: world
       Value: Orbit (rviz)
-      Yaw: 1.2335834503173828
+      Yaw: 0.0035948725417256355
     Saved: ~
 Window Geometry:
   Displays:
