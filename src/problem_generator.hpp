@@ -28,14 +28,13 @@ public:
 
 
     // Initialize random noise rotation matrix
-    noise_rotation = Eigen::MatrixXd::Zero(3 * V, 3 * V);
-    for (int i = 0; i < V; i++) {
-      for (int j = 0; j < V; j++) {
-        if (i == j) continue;
-        if (i < j) continue;
+    for (size_t i = 0; i < V - 1; i++) {
+      for (size_t j = i + 1; j < V; j++) {
+        if (!isAdjacent(i, j)) continue;
+
         Eigen::Matrix3d N = util::noiseRotation(noise_gain);
-        noise_rotation.block(3 * i, 3 * j, 3, 3) = N;
-        noise_rotation.block(3 * j, 3 * i, 3, 3) = N.transpose();
+        noise_rotations.emplace(std::make_pair(i, j), N);
+        noise_rotations.emplace(std::make_pair(j, i), N.transpose());
       }
     }
 
@@ -46,8 +45,9 @@ public:
 
         const Eigen::Matrix3d& Ri = true_rotations.at(i);
         const Eigen::Matrix3d& Rj = true_rotations.at(j);
-        Eigen::Matrix3d noise = noise_rotation.block(3 * i, 3 * j, 3, 3);
-        measured_rotations.emplace(std::make_pair(i, j), Ri.transpose() * Rj * noise);
+        const Eigen::Matrix3d& N = noise_rotations.at(std::make_pair(i, j));
+
+        measured_rotations.emplace(std::make_pair(i, j), Ri.transpose() * Rj * N);
       }
     }
   };
@@ -75,7 +75,7 @@ public:
 
 private:
   Eigen::MatrixXd adjacent_graph;
-  Eigen::MatrixXd noise_rotation;
+  RelativeRotations noise_rotations;
   RelativeRotations measured_rotations;
   Matrix3dVector true_rotations;
 };

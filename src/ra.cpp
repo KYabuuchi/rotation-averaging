@@ -2,24 +2,22 @@
 #include "ra.hpp"
 #include <cmath>
 
-namespace ra
-{
 // the result of eliminating the k th row and column from Y^t
-Eigen::MatrixXd calcB(const Eigen::MatrixXd& Y)
+Eigen::MatrixXd RotationAveraging::calcB(const Eigen::MatrixXd& Y)
 {
   int cols = Y.cols();
   return Y.bottomRightCorner(cols - 3, cols - 3);
 }
 
 // the result of eliminating the k th column and all but the k th row from \tilde{R}
-Eigen::MatrixXd calcW(const Eigen::MatrixXd& tilde_R)
+Eigen::MatrixXd RotationAveraging::calcW(const Eigen::MatrixXd& tilde_R)
 {
   int cols = tilde_R.cols();
   return tilde_R.bottomLeftCorner(cols - 3, 3);
 }
 
 // S_k = -B_k W_k [ (W_k^\top B_k W_k)^{\frac12} ]^\dag
-Eigen::MatrixXd calcS(const Eigen::MatrixXd& Bk, const Eigen::MatrixXd& Wk)
+Eigen::MatrixXd RotationAveraging::calcS(const Eigen::MatrixXd& Bk, const Eigen::MatrixXd& Wk)
 {
   Eigen::MatrixXd WtBW = Wk.transpose() * Bk * Wk;
   Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> solver(WtBW);
@@ -33,7 +31,7 @@ Eigen::MatrixXd calcS(const Eigen::MatrixXd& Bk, const Eigen::MatrixXd& Wk)
 
 // Y = [ I   S_k^\top]
 //     [ S_k B_k     ]
-Eigen::MatrixXd calcY(const Eigen::MatrixXd& S, const Eigen::MatrixXd& B)
+Eigen::MatrixXd RotationAveraging::calcY(const Eigen::MatrixXd& S, const Eigen::MatrixXd& B)
 {
   int cols = S.cols() + B.cols();
   Eigen::MatrixXd Y = Eigen::MatrixXd::Identity(cols, cols);
@@ -43,7 +41,7 @@ Eigen::MatrixXd calcY(const Eigen::MatrixXd& S, const Eigen::MatrixXd& B)
   return Y;
 }
 
-void warp(Eigen::MatrixXd& tilde_R, Eigen::MatrixXd& Y)
+void RotationAveraging::warp(Eigen::MatrixXd& tilde_R, Eigen::MatrixXd& Y)
 {
   int cols = tilde_R.cols();
   Eigen::MatrixXd y = Y.block(0, 0, cols, 3);
@@ -56,5 +54,3 @@ void warp(Eigen::MatrixXd& tilde_R, Eigen::MatrixXd& Y)
   tilde_R.topRightCorner(cols - 3, 3) = r.bottomRows(cols - 3);
   tilde_R.bottomLeftCorner(3, cols - 3) = r.bottomRows(cols - 3).transpose();
 }
-
-}  // namespace ra

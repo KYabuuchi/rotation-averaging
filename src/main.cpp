@@ -40,16 +40,14 @@ int main(int argc, char** argv)
 
   // Construct the problem
   ProblemGenerator problem(vertex_num, noise_gain);
-  // Eigen::MatrixXd Y = Eigen::MatrixXd::Identity(3 * vertex_num, 3 * vertex_num);  // 3V x 3V の適当な正定値行列
-  // Eigen::MatrixXd tilde_R = problem.getTildeR();
+  RotationAveraging ra(vertex_num);
 
-  for (int i = 0; i < vertex_num - 1; i++) {
-    for (int j = i + 1; j < vertex_num; j++) {
-      std::cout << problem.measured(i, j) << std::endl;
-      std::cout << "\033[1;32m###################\033[0m" << std::endl;
+  // どうせサイクリックなので，
+  for (size_t i = 0; i < vertex_num - 1; i++) {
+    for (size_t j = i + 1; j < vertex_num; j++) {
+      ra.setMeasurement(i, j, problem.measured(i, j));
     }
   }
-
 
   // Setup main loop
   std::chrono::system_clock::time_point m_start;
@@ -57,40 +55,32 @@ int main(int argc, char** argv)
   int iteration = 0;
 
 
-  // while (ros::ok()) {
-  //   iteration++;
-  //   // Print the current state
-  //   for (int i = 0; i < problem.V; i++) {
-  //     Eigen::Matrix3d opt_R = Y.block(0, 3 * i, 3, 3);
-  //     double theta = util::calcAngleResidual(problem.truth(i), util::normalize(opt_R));
-  //     std::cout << i << " cordal distance= " << theta << std::endl;
-  //   }
-  //   std::cout << "\033[1;32m###################" << iteration << "\033[0m" << std::endl;
+  while (ros::ok()) {
+    // Print the current state
+    std::cout << "\033[1;32m###################" << iteration << "\033[0m" << std::endl;
+    for (size_t i = 0; i < vertex_num - 1; i++) {
+      for (size_t j = i + 1; j < vertex_num; j++) {
+        std::cout << i << " " << j << " " << ra.getError(i, j) << std::endl;
+      }
+    }
 
+    // Optimize
+    ra.optimize();
 
-  //   // Optimize
-  //   for (int i = 0; i < problem.V; i++) {
-  //     Eigen::MatrixXd Bk = ra::calcB(Y);        // 3(N-1) x 3(N-1)
-  //     Eigen::MatrixXd Wk = ra::calcW(tilde_R);  // 3(N-1) x 3
-  //     Eigen::MatrixXd Sk = ra::calcS(Bk, Wk);   // 3(N-1) x 3
-  //     Y = ra::calcY(Sk, Bk);                    // 3N     x 3N
-  //     ra::warp(tilde_R, Y);
-  //   }
+    // // Publish for RViz
+    // pub::publishMeasurement(pose_publisher);
+    // pub::publishPose();
+    // pub::publishIterator(iteration_publisher, iteration);
+    // cone.publish();
 
+    // std::vector<std::pair<Eigen::Matrix3d, Eigen::Matrix3d>> a;
+    // visualizer.publish(a);
 
-  //   // Publish for RViz
-  //   pub::publishMeasurement(pose_publisher);
-  //   pub::publishPose();
-  //   pub::publishIterator(iteration_publisher, iteration);
-  //   cone.publish();
-
-  //   std::vector<std::pair<Eigen::Matrix3d, Eigen::Matrix3d>> a;
-  //   visualizer.publish(a);
-
-  //   // Spin and wait
-  //   ros::spinOnce();
-  //   loop_rate.sleep();
-  // }
+    // Spin and wait
+    ros::spinOnce();
+    loop_rate.sleep();
+    iteration++;
+  }
 
   return 0;
 }
