@@ -1,13 +1,18 @@
+// Cyclicな観測のみ対応
 #pragma once
+#include "types.hpp"
 #include "util.hpp"
 #include <Eigen/Dense>
 #include <iostream>
 #include <vector>
 
-class Problem
+class ProblemGenerator
 {
 public:
-  Problem(const int V, const double noise_gain = 0.2) : V(V), noise_gain(noise_gain)
+  const int V;
+  const double noise_gain;
+
+  ProblemGenerator(const int V, const double noise_gain = 0.2) : V(V), noise_gain(noise_gain)
   {
     // Construct the adjacent graph
     adjacent_graph = util::initCyclicAdjacentGraph(V);
@@ -34,33 +39,22 @@ public:
       }
     }
 
-
     // Initialize measured rotation matrix
-    measured_rotation = Eigen::MatrixXd::Zero(3 * V, 3 * V);
-    for (int i = 0; i < V; i++) {
-      for (int j = 0; j < V; j++) {
+    for (size_t i = 0; i < V - 1; i++) {
+      for (size_t j = i + 1; j < V; j++) {
+        if (!isAdjacent(i, j)) continue;
 
-        if (adjacent(i, j) == 0) continue;
         const Eigen::Matrix3d& Ri = true_rotations.at(i);
         const Eigen::Matrix3d& Rj = true_rotations.at(j);
-
         Eigen::Matrix3d noise = noise_rotation.block(3 * i, 3 * j, 3, 3);
-        if (i > j)
-          measured_rotation.block(3 * i, 3 * j, 3, 3) = Ri.transpose() * Rj * noise;
-        else
-          measured_rotation.block(3 * i, 3 * j, 3, 3) = noise * Ri.transpose() * Rj;
+        measured_rotations.emplace(std::make_pair(i, j), Ri.transpose() * Rj * noise);
       }
     }
   };
 
-  Eigen::MatrixXd getTildeR() const { return measured_rotation; }
-
-  const int V;
-  const double noise_gain;
-
-  int adjacent(int i, int j) const
+  bool isAdjacent(int i, int j) const
   {
-    return adjacent_graph(i, j);
+    return adjacent_graph(i, j) > 0;
   }
 
   Eigen::Matrix3d truth(int i) const
@@ -68,9 +62,20 @@ public:
     return true_rotations.at(i);
   }
 
+  Eigen::Matrix3d measured(size_t from, size_t to) const
+  {
+    Eigen::Matrix3d R = Eigen::Matrix3d::Zero();
+    if (!isAdjacent(from, to)) return R;
+
+    if (from < to)
+      return measured_rotations.at(std::make_pair(from, to));
+    else
+      return measured_rotations.at(std::make_pair(to, from)).transpose();
+  }
+
 private:
   Eigen::MatrixXd adjacent_graph;
   Eigen::MatrixXd noise_rotation;
-  Eigen::MatrixXd measured_rotation;
-  std::vector<Eigen::Matrix3d, Eigen::aligned_allocator<Eigen::Matrix3d>> true_rotations;
+  RelativeRotations measured_rotations;
+  Matrix3dVector true_rotations;
 };
