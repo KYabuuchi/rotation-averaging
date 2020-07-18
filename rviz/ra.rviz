@@ -59,47 +59,7 @@ Visualization Manager:
           Value: true
         pose1:
           Value: true
-        pose10:
-          Value: true
-        pose11:
-          Value: true
-        pose12:
-          Value: true
-        pose13:
-          Value: true
-        pose14:
-          Value: true
-        pose15:
-          Value: true
-        pose16:
-          Value: true
-        pose17:
-          Value: true
-        pose18:
-          Value: true
-        pose19:
-          Value: true
         pose2:
-          Value: true
-        pose20:
-          Value: true
-        pose21:
-          Value: true
-        pose22:
-          Value: true
-        pose23:
-          Value: true
-        pose24:
-          Value: true
-        pose25:
-          Value: true
-        pose26:
-          Value: true
-        pose27:
-          Value: true
-        pose28:
-          Value: true
-        pose29:
           Value: true
         pose3:
           Value: true
@@ -128,47 +88,7 @@ Visualization Manager:
             {}
           pose1:
             {}
-          pose10:
-            {}
-          pose11:
-            {}
-          pose12:
-            {}
-          pose13:
-            {}
-          pose14:
-            {}
-          pose15:
-            {}
-          pose16:
-            {}
-          pose17:
-            {}
-          pose18:
-            {}
-          pose19:
-            {}
           pose2:
-            {}
-          pose20:
-            {}
-          pose21:
-            {}
-          pose22:
-            {}
-          pose23:
-            {}
-          pose24:
-            {}
-          pose25:
-            {}
-          pose26:
-            {}
-          pose27:
-            {}
-          pose28:
-            {}
-          pose29:
             {}
           pose3:
             {}
@@ -230,25 +150,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.26640510559082
+      Distance: 5.092081546783447
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.37328535318374634
-        Y: 0.021448276937007904
-        Z: -0.6105778217315674
+        X: 0.128957137465477
+        Y: -0.09160834550857544
+        Z: -0.9776390790939331
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8347973823547363
+      Pitch: 1.5697963237762451
       Target Frame: world
       Value: Orbit (rviz)
-      Yaw: 2.6586294174194336
+      Yaw: 3.1109189987182617
     Saved: ~
 Window Geometry:
   Displays:

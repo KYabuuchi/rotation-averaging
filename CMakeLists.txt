@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(ra)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
+find_package(G2O REQUIRED)
+find_package(CSparse REQUIRED)
+find_package(Eigen3 REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   roscpp
@@ -13,45 +15,37 @@ find_package(catkin REQUIRED COMPONENTS
   rosbag
 )
 
-## System dependencies are found with CMake's conventions
-find_package(OpenCV REQUIRED)
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIRS})
+message(${G2O_TYPES_DATA})
+message(${CSPARSE_INCLUDE_DIR})
 
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if your package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES imu-gravity
-#  CATKIN_DEPENDS cv_bridge roscpp sensor_msgs tf
-#  DEPENDS system_lib
+
+set(G2O_LIBS
+  ${G2O_TYPES_DATA}
+  ${G2O_CORE_LIBRARY}
+  ${G2O_STUFF_LIBRARY}
+  ${G2O_SOLVER_PCG}
+  ${G2O_SOLVER_CSPARSE}
+  ${G2O_SOLVER_CHOLMOD}
+  ${G2O_TYPES_SLAM3D}
+  ${CXSPARSE_LIBRARIES}
+  ${G2O_SOLVER_CSPARSE_EXTENSION}
+  ${SUITESPARSE_LIBRARIES}
+  ${CSPARSE_LIBRARY}
 )
+message(${G2O_LIBS})
 
-###########
-## Build ##
-###########
 
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
 include_directories(
   src
+  ${EIGEN3_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
+  ${CSPARSE_INCLUDE_DIR}
 )
+file(GLOB SOURCES src/*.cpp)
 
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/imu-gravity.cpp
-# )
 
-## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
-add_executable(ra_node src/main.cpp src/publish.cpp src/util.cpp src/rotation_averaging.cpp)
-target_link_libraries(ra_node ${catkin_LIBRARIES} ${OpenCV_LIBS})
+add_executable(ra_node ${SOURCES})
+target_link_libraries(ra_node ${catkin_LIBRARIES})
+
+add_executable(ra_g2o_node g2o.cpp)
+target_link_libraries(ra_g2o_node ${catkin_LIBRARIES} ${G2O_LIBS})
