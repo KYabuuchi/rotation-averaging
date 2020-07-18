@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
-#include "rotation_averaging.hpp"
-#include "util.hpp"
+#include "duality/rotation_averaging.hpp"
+#include "core/util.hpp"
 #include <cmath>
 
 namespace

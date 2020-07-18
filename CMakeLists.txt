@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 message(${G2O_TYPES_DATA})
 message(${CSPARSE_INCLUDE_DIR})
 
+catkin_package()
 
 set(G2O_LIBS
   ${G2O_TYPES_DATA}
@@ -41,11 +42,14 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${CSPARSE_INCLUDE_DIR}
 )
-file(GLOB SOURCES src/*.cpp)
+file(GLOB SOURCE_CORE src/core/*.cpp)
+file(GLOB SOURCE_DUALITY src/duality/*.cpp)
+file(GLOB SOURCE_G2O src/g2o/*.cpp)
 
 
-add_executable(ra_node ${SOURCES})
-target_link_libraries(ra_node ${catkin_LIBRARIES})
-
-add_executable(ra_g2o_node g2o.cpp)
+add_executable(ra_g2o_node src/ra_g2o_node.cpp ${SOURCE_CORE} ${SOURCE_G2O})
 target_link_libraries(ra_g2o_node ${catkin_LIBRARIES} ${G2O_LIBS})
+
+
+add_executable(ra_node src/ra_node.cpp ${SOURCE_DUALITY} ${SOURCE_CORE})
+target_link_libraries(ra_node ${catkin_LIBRARIES})

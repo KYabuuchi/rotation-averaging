@@ -1,5 +1,5 @@
 #pragma once
-#include "types.hpp"
+#include "core/types.hpp"
 #include <Eigen/Dense>
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>

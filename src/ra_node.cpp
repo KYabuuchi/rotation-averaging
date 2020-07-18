@@ -1,13 +1,9 @@
-#include "problem_generator.hpp"
-#include "publish.hpp"
-#include "rotation_averaging.hpp"
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
+#include "core/problem_generator.hpp"
+#include "core/publish.hpp"
+#include "duality/rotation_averaging.hpp"
 #include <chrono>
 #include <iostream>
 #include <ros/ros.h>
-#include <std_msgs/Float32.h>
-#include <visualization_msgs/MarkerArray.h>
 
 int main(int argc, char** argv)
 {

@@ -1,5 +1,5 @@
 #define _USE_MATH_DEFINES
-#include "util.hpp"
+#include "core/util.hpp"
 #include <cmath>
 #include <random>
 
