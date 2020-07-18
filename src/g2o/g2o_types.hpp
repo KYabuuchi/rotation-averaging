@@ -22,11 +22,11 @@ public:
   }
 };
 
-class EdgePointOnCircle : public g2o::BaseBinaryEdge<1, Eigen::Matrix3d, VertexRotation, VertexRotation>
+class EdgeRotation : public g2o::BaseBinaryEdge<1, Eigen::Matrix3d, VertexRotation, VertexRotation>
 {
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  EdgePointOnCircle() {}
+  EdgeRotation() {}
   virtual bool read(std::istream&) { return false; }
   virtual bool write(std::ostream&) const { return false; }
 
@@ -36,4 +36,9 @@ public:
     const VertexRotation* vp1 = static_cast<const VertexRotation*>(vertex(1));
     _error(0) = (so3::exp(vp0->estimate()) * measurement() - so3::exp(vp1->estimate())).norm();
   }
+
+  // Analytical Jacobian
+  // virtual void linearizeOplus()
+  // {
+  // }
 };

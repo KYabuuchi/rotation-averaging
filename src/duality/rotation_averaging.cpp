@@ -129,10 +129,10 @@ double RotationAveraging::getError(size_t from, size_t to) const
     return -1;
 
   Eigen::Matrix3d R_t, R_f;
-  R_f = y.block(0, 3 * from, 3, 3);
-  R_t = y.block(0, 3 * to, 3, 3);
+  getAbsolute(to, R_t);
+  getAbsolute(from, R_f);
 
-  return (R_f.transpose() * R_t - R_m).norm();
+  return (R_f * R_m - R_t).norm();
 }
 
 double RotationAveraging::getTotalError() const

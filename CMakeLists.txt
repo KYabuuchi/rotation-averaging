@@ -15,8 +15,6 @@ find_package(catkin REQUIRED COMPONENTS
   rosbag
 )
 
-message(${G2O_TYPES_DATA})
-message(${CSPARSE_INCLUDE_DIR})
 
 catkin_package()
 
@@ -33,8 +31,6 @@ set(G2O_LIBS
   ${SUITESPARSE_LIBRARIES}
   ${CSPARSE_LIBRARY}
 )
-message(${G2O_LIBS})
-
 
 include_directories(
   src
@@ -45,6 +41,8 @@ include_directories(
 file(GLOB SOURCE_CORE src/core/*.cpp)
 file(GLOB SOURCE_DUALITY src/duality/*.cpp)
 file(GLOB SOURCE_G2O src/g2o/*.cpp)
+
+message(${SOURCE_G2O})
 
 
 add_executable(ra_g2o_node src/ra_g2o_node.cpp ${SOURCE_CORE} ${SOURCE_G2O})

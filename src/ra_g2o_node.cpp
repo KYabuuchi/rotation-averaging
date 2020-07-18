@@ -1,44 +1,9 @@
 #include "core/problem_generator.hpp"
 #include "core/publish.hpp"
-#include "g2o/g2o_types.hpp"
+#include "g2o/g2o_ra.hpp"
 #include <chrono>
-#include <g2o/core/block_solver.h>
-#include <g2o/core/optimization_algorithm_levenberg.h>
-#include <g2o/core/solver.h>
-#include <g2o/core/sparse_optimizer.h>
-#include <g2o/solvers/csparse/linear_solver_csparse.h>
 #include <iostream>
 #include <ros/ros.h>
-
-// // setup the solver
-// typedef g2o::BlockSolver<g2o::BlockSolverTraits<Eigen::Dynamic, Eigen::Dynamic>> MyBlockSolver;
-// typedef g2o::LinearSolverCSparse<MyBlockSolver::PoseMatrixType> MyLinearSolver;
-// g2o::SparseOptimizer optimizer;
-// optimizer.setVerbose(false);
-// g2o::OptimizationAlgorithmLevenberg* solver = new g2o::OptimizationAlgorithmLevenberg(
-//     g2o::make_unique<MyBlockSolver>(g2o::make_unique<MyLinearSolver>()));
-// optimizer.setAlgorithm(solver);
-
-// // build the optimization problem given the points
-// // 1. add the circle vertex
-// VertexRotation* circle = new VertexCircle();
-// circle->setId(0);
-// circle->setEstimate(Eigen::Vector3d(3.0, 3.0, 3.0));  // some initial value for the circle
-// optimizer.addVertex(circle);
-
-// for (int i = 0; i < numPoints; ++i) {
-//   EdgePointOnCircle* e = new EdgePointOnCircle;
-//   e->setInformation(Eigen::Matrix<double, 1, 1>::Identity());
-//   e->setVertex(0, circle);
-//   e->setMeasurement(points[i]);
-//   optimizer.addEdge(e);
-// }
-
-// // perform the optimization
-// optimizer.initializeOptimization();
-// optimizer.setVerbose(verbose);
-// optimizer.optimize(maxIterations);
-
 
 int main(int argc, char** argv)
 {
@@ -66,6 +31,13 @@ int main(int argc, char** argv)
 
   // Construct the problem
   ProblemGenerator problem(vertex_num, noise_gain);
+  G2oRotationAveraging ra(vertex_num);
+  for (size_t i = 0; i < vertex_num; i++) {
+    for (size_t j = 0; j < vertex_num; j++) {
+      if (!problem.isAdjacent(i, j)) continue;
+      ra.setMeasurement(i, j, problem.measured(i, j));
+    }
+  }
 
 
   // setup initial absolute rotation using integrated measurement
@@ -74,7 +46,7 @@ int main(int argc, char** argv)
   for (int i = 0; i < vertex_num - 1; i++) {
     initial.push_back(initial.at(i) * problem.measured(i, i + 1));
   }
-  // ra.setAbsolute(initial);
+  ra.setAbsolute(initial);
 
 
   // Setup main loop
@@ -86,9 +58,8 @@ int main(int argc, char** argv)
   int wait_for_optimization = 0;
   while (ros::ok()) {
     // Print the current state
-    // double error = ra.getTotalError();
-    double error = 0;
-    std::cout << "\033[1;32m################### " << iteration << "\033[0m" << std::endl;
+    double error = ra.getTotalError();
+    std::cout << "\033[1;32m################### " << iteration << " " << error << "\033[0m" << std::endl;
 
 
     // Publish information for RViz
@@ -100,8 +71,7 @@ int main(int argc, char** argv)
     Matrix3dVector estimated;
     for (size_t i = 0; i < vertex_num; i++) {
       Eigen::Matrix3d R;
-      // ra.getAbsolute(i, R);
-      R.setIdentity();
+      ra.getAbsolute(i, R);
       estimated.push_back(R);
     }
     visualizer.publish(estimated, problem.getMeasurement());
@@ -116,8 +86,7 @@ int main(int argc, char** argv)
     wait_for_optimization++;
     if (wait_for_optimization >= 3) {
       auto start = std::chrono::system_clock::now();
-      // ra.optimize();
-      // ra.optimizeOnce();
+      ra.optimize(5);
       auto end = std::chrono::system_clock::now();
       iteration++;
       past_time += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
