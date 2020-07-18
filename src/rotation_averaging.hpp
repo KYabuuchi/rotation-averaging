@@ -1,4 +1,5 @@
 #pragma once
+#include "types.hpp"
 #include <Eigen/Dense>
 #include <iostream>
 
@@ -15,7 +16,7 @@ public:
   void setMeasurement(size_t from, size_t to, const Eigen::Matrix3d& R);
   bool getMeasurement(size_t from, size_t to, Eigen::Matrix3d& R) const;
 
-  void setAbsolute(size_t at, const Eigen::Matrix3d& R);
+  void setAbsolute(const Matrix3dVector& Rs);
   bool getAbsolute(size_t at, Eigen::Matrix3d& R) const;
 
   double getError(size_t from, size_t to) const;

@@ -19,8 +19,8 @@ int main(int argc, char** argv)
   // rosparams
   ros::init(argc, argv, "ra_node");
   ros::NodeHandle pnh("~");
-  int vertex_num = 30;
-  double noise_gain = 0.1;
+  int vertex_num = 10;
+  double noise_gain = 1.0;
   pnh.getParam("vertex_num", vertex_num);
   pnh.getParam("noise_gain", noise_gain);
   ROS_INFO("# of Vertex is %d.", vertex_num);
@@ -44,12 +44,22 @@ int main(int argc, char** argv)
   }
 
 
+  // setup initial absolute rotation using integrated measurement
+  Matrix3dVector initial;
+  initial.push_back(Eigen::Matrix3d::Identity());
+  for (int i = 0; i < vertex_num - 1; i++) {
+    initial.push_back(initial.at(i) * problem.measured(i, i + 1));
+  }
+  ra.setAbsolute(initial);
+
+
   // Setup main loop
   ros::Rate loop_rate(1);
   int iteration = 0;
   int past_time = 0;
 
 
+  int wait_for_optimization = 0;
   while (ros::ok()) {
     // Print the current state
     double error = ra.getTotalError();
@@ -74,15 +84,18 @@ int main(int argc, char** argv)
     // Spin and wait
     ros::spinOnce();
     loop_rate.sleep();
-    iteration++;
 
 
     // Optimize
-    auto start = std::chrono::system_clock::now();
-    // ra.optimize();
-    ra.optimizeOnce();
-    auto end = std::chrono::system_clock::now();
-    past_time += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    wait_for_optimization++;
+    if (wait_for_optimization >= 3) {
+      auto start = std::chrono::system_clock::now();
+      // ra.optimize();
+      ra.optimizeOnce();
+      auto end = std::chrono::system_clock::now();
+      iteration++;
+      past_time += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    }
   }
 
   return 0;

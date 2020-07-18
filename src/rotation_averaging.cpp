@@ -68,9 +68,18 @@ RotationAveraging::RotationAveraging(size_t V) : V(V)
   y.setIdentity(3 * V, 3 * V);
 }
 
-void RotationAveraging::setAbsolute(size_t at, const Eigen::Matrix3d& R)
+void RotationAveraging::setAbsolute(const Matrix3dVector& Rs)
 {
+  if (Rs.size() != V) return;
+
+  for (int i = 0; i < V; i++) {
+    for (int j = 0; j < V; j++) {
+      y.block<3, 3>(3 * i, 3 * j) = Rs.at(i).transpose() * Rs.at(j);
+    }
+  }
 }
+
+
 bool RotationAveraging::getAbsolute(size_t at, Eigen::Matrix3d& R) const
 {
   if (at >= V)
@@ -78,7 +87,6 @@ bool RotationAveraging::getAbsolute(size_t at, Eigen::Matrix3d& R) const
   R = util::normalize(y.block(0, 3 * at, 3, 3));
   return false;
 }
-
 
 void RotationAveraging::setMeasurement(size_t from, size_t to, const Eigen::Matrix3d& R)
 {

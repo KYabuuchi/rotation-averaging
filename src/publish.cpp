@@ -22,7 +22,7 @@ void publishText(ros::Publisher& publisher, const std::string& text)
   marker.action = visualization_msgs::Marker::ADD;
 
   marker.pose.position.x = 1.5;
-  marker.pose.position.y = 0;
+  marker.pose.position.y = 1.5;
   marker.pose.position.z = 0;
 
   marker.pose.orientation.x = 0;
