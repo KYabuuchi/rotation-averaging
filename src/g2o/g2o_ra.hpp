@@ -17,7 +17,7 @@ public:
   bool getAbsolute(size_t at, Eigen::Matrix3d& R) const;
 
   double getError(size_t from, size_t to) const;
-  double getTotalError() const;
+  double getTotalSquaredError() const;
 
   void optimize(int max_iteration);
 

@@ -135,14 +135,14 @@ double RotationAveraging::getError(size_t from, size_t to) const
   return (R_f * R_m - R_t).norm();
 }
 
-double RotationAveraging::getTotalError() const
+double RotationAveraging::getTotalSquaredError() const
 {
   double total_error = 0;
   for (size_t i = 0; i < V - 1; i++) {
     for (size_t j = i + 1; j < V; j++) {
       double error = getError(i, j);
       if (error < 0) continue;
-      total_error += error;
+      total_error += error * error;
     }
   }
   return total_error;

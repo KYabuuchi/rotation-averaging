@@ -58,8 +58,8 @@ int main(int argc, char** argv)
   int wait_for_optimization = 0;
   while (ros::ok()) {
     // Print the current state
-    double error = ra.getTotalError();
-    std::cout << "\033[1;32m################### " << iteration << "\033[0m" << std::endl;
+    double error = ra.getTotalSquaredError();
+    std::cout << "\033[1;32m################### " << iteration << " " << error << " " << past_time << "\033[0m" << std::endl;
 
 
     // Publish information for RViz

@@ -20,7 +20,7 @@ public:
   bool getAbsolute(size_t at, Eigen::Matrix3d& R) const;
 
   double getError(size_t from, size_t to) const;
-  double getTotalError() const;
+  double getTotalSquaredError() const;
 
 private:
   Eigen::MatrixXd tilde_r;

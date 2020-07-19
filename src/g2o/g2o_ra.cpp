@@ -99,14 +99,14 @@ double G2oRotationAveraging::getError(size_t from, size_t to) const
   return error;
 }
 
-double G2oRotationAveraging::getTotalError() const
+double G2oRotationAveraging::getTotalSquaredError() const
 {
   double total_error = 0;
   for (size_t i = 0; i < V; i++) {
     for (size_t j = 0; j < V; j++) {
       double error = getError(i, j);
       if (error < 0) continue;
-      total_error += error;
+      total_error += error * error;
     }
   }
   return total_error;
