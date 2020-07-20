@@ -55,13 +55,55 @@ Visualization Manager:
       Frame Timeout: 60
       Frames:
         All Enabled: true
+        pose0:
+          Value: true
+        pose1:
+          Value: true
+        pose2:
+          Value: true
+        pose3:
+          Value: true
+        pose4:
+          Value: true
+        pose5:
+          Value: true
+        pose6:
+          Value: true
+        pose7:
+          Value: true
+        pose8:
+          Value: true
+        pose9:
+          Value: true
+        world:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        world:
+          pose0:
+            {}
+          pose1:
+            {}
+          pose2:
+            {}
+          pose3:
+            {}
+          pose4:
+            {}
+          pose5:
+            {}
+          pose6:
+            {}
+          pose7:
+            {}
+          pose8:
+            {}
+          pose9:
+            {}
       Update Interval: 0
       Value: true
     - Class: rviz/MarkerArray
@@ -69,7 +111,7 @@ Visualization Manager:
       Marker Topic: /measurements
       Name: Measurements
       Namespaces:
-        {}
+        cone: true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -77,7 +119,7 @@ Visualization Manager:
       Marker Topic: /text
       Name: Text
       Namespaces:
-        {}
+        text: true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -126,7 +168,7 @@ Visualization Manager:
       Pitch: 1.5697963237762451
       Target Frame: world
       Value: Orbit (rviz)
-      Yaw: 3.1109189987182617
+      Yaw: 3.1309192180633545
     Saved: ~
 Window Geometry:
   Displays:

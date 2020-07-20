@@ -31,7 +31,8 @@ Eigen::Vector3d randomS2()
 // 回転角に制限を設定できるランダムな回転行列
 Eigen::Matrix3d noiseRotation(double max = M_PI / 10.0)
 {
-  std::uniform_real_distribution<> rand1(-1, 1);
+  // std::uniform_real_distribution<> rand1(-1, 1);
+  std::normal_distribution<> rand1(-1, 1);
   Eigen::Vector3d e = randomS2();
   double theta = max * rand1(mt);
   return Eigen::AngleAxisd(theta, e).toRotationMatrix();

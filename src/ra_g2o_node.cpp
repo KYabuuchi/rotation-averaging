@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
 
   // Setup main loop
-  ros::Rate loop_rate(1);
+  ros::Rate loop_rate(2);
   int iteration = 0;
   int past_time = 0;
 
@@ -84,9 +84,9 @@ int main(int argc, char** argv)
 
     // Optimize
     wait_for_optimization++;
-    if (wait_for_optimization >= 3) {
+    if (wait_for_optimization >= 10) {
       auto start = std::chrono::system_clock::now();
-      ra.optimize(5);
+      ra.optimize(1);
       auto end = std::chrono::system_clock::now();
       iteration++;
       past_time += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();

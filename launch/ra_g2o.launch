@@ -4,7 +4,7 @@
     <arg name="noise_gain" default = "1.0" /> 
     
     <!-- ra_node -->
-    <node name="ra_node" pkg="ra" type="ra_node" output="screen">
+    <node name="ra_g2o_node" pkg="ra" type="ra_g2o_node" output="screen">
         <param name="vertex_num" type="double" value="$(arg vertex_num)" />
         <param name="noise_gain" type="double" value="$(arg noise_gain)" />
     </node>
